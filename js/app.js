@@ -134,13 +134,13 @@ function InitialDocument() {
 //After the doc has been created, create a Rich Deep Link(RDL) and post it back to Omlet chat
 //...unless you're in a browser.
 function DocumentCreated(doc) {
-    var quikpoll = i18n.t("QuikPoll");
+    var quikpoll = "QuikList";
     if(Omlet.isInstalled()) {
         var rdl = Omlet.createRDL({
             appName: "My Quick List",
             noun: "poll",
             displayTitle: quikpoll,
-            displayThumbnailUrl: "https://dhorh0z3k6ro7.cloudfront.net/apps/quikpoll/images/quikpoll.png",
+            displayThumbnailUrl: "http://web.stanford.edu/~emmas2/quiklist/images/toDo.jpg",
             displayText: doc.poll.question,
             json: doc.poll,
             callback: encodeURI(window.location.href)
@@ -370,15 +370,15 @@ function addResponse() {
 function ReceiveUpdate(doc) {
     myDoc = doc;
 
-    if(showingResults) {
-        updateResults();
-    } else {
-        if(Omlet.getIdentity().principal in myDoc.voters) {
-            showPollResults(myDoc.voters[Omlet.getIdentity().principal].vote);
-        } else {
+    // if(showingResults) {
+    //     updateResults();
+    // } else {
+    //     if(Omlet.getIdentity().principal in myDoc.voters) {
+    //         showPollResults(myDoc.voters[Omlet.getIdentity().principal].vote);
+    //     } else {
             ShowQuestionForm();
-        }
-    }
+    //     }
+    // }
 }
 
 //show the poll form
@@ -399,8 +399,20 @@ function ShowQuestionForm() {
         responseCount = i+1;
     }
 
-    $("#moreResponses").fastClick(addResponse);
-    $("#submit").fastClick(sharePoll);
+    var share = function() {
+		var rdl = Omlet.createRDL({
+	            noun: "List Response",
+	            displayTitle: "The Updated List",
+	            displayThumbnailUrl: "http://web.stanford.edu/~emmas2/quiklist/images/toDo.jpg",
+	            displayText: myDoc.poll.question,
+	            //json: myDoc.poll,
+	            callback: encodeURI(window.location.href)
+	    });
+	    Omlet.exit(rdl);
+	 }
+
+	    $("#moreResponses").fastClick(addResponse);
+	    $("#submit").fastClick(share);
 
     // $("#app").html("<input value='" + myDoc.poll.response0 + "''>");
     // $("#app").html("<input value='" + myDoc.poll.response0 + "''>");
@@ -447,4 +459,3 @@ Omlet.ready(function() {
       }
     });
 });
-
